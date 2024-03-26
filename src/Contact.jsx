@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 // import { CSVLink } from "react-csv";
+import {  useNavigate } from "react-router-dom";
+import { CSVLink, CSVDownload } from "react-csv";
 
 const Contact = () => {
   const [contacts, setContacts] = useState([]);
@@ -10,6 +12,9 @@ const Contact = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [image, setImage] = useState("");
   const [userId, setUserId] = useState("");
+
+
+  const navigate = useNavigate();
 
   // Load userId from local storage or generate a new one if not exists
   useEffect(() => {
@@ -22,6 +27,8 @@ const Contact = () => {
       localStorage.setItem("userId", newUserId);
     }
   }, []);
+
+
 
   // Load contacts from local storage when component mounts
   useEffect(() => {
@@ -91,13 +98,22 @@ const Contact = () => {
     reader.readAsDataURL(file);
   };
 
+  const logout = () => {
+    navigate("/signin");
+  };
   return (
     <div>
+      <CSVLink data={userId}>Download me</CSVLink>
       <h1>Contact List</h1>
       {/* <button>LOGOUT</button> */}
       <button className="btn btn-dark" onClick={() => openPopup(null)}>
         Add Contact
       </button>
+      <div>
+        <a href="#" onClick={logout}>
+          LOGOUT
+        </a>
+      </div>
       {showPopup && (
         <div className="popup">
           <div className="popup-content">
@@ -179,4 +195,3 @@ const Contact = () => {
 };
 
 export default Contact;
-

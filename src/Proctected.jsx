@@ -1,17 +1,17 @@
 import { useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Proctected(props) {
   const { Component } = props;
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // const storedUsers = JSON.parse(localStorage.getItem("userRecords"));
-    // console.log('------------------------>', storedUsers)
+    const storedUsers = JSON.parse(localStorage.getItem("userRecords"));
+    console.log('------------------------>', storedUsers)
 
-    // if (!storedUsers) {
-    //   navigate("/login");
-    // }
+    if (!storedUsers.length) {
+      navigate("/signin");
+    }
   });
 
   return (

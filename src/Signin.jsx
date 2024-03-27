@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 
 const Signin = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -11,7 +11,7 @@ const Signin = () => {
     e.preventDefault();
     setError("");
 
-    //get data from local storage
+    // Get data from local storage
     const storedUsers = JSON.parse(localStorage.getItem("userRecords"));
 
     // Check if email and password are provided
@@ -24,8 +24,11 @@ const Signin = () => {
     const user = storedUsers.find((user) => user.username === email);
 
     if (user && user.password === password) {
+      // Save logged-in user details to local storage
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+
       alert("Login successful!");
-      window.location.href = "/contact";
+      navigate("/contact");
     } else {
       setError("Invalid email or password. Please try again.");
     }

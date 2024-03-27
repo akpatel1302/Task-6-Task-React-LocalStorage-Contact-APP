@@ -11,7 +11,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Signup />}></Route>
         <Route path="/signin" element={<Signin />}></Route>
-        <Route path="/contact" element={<Proctected Component={Contact} />}></Route>
+        <Route
+          path="/contact"
+          element={<Proctected Component={Contact} />}
+        ></Route>
       </Routes>
     </BrowserRouter>
   );

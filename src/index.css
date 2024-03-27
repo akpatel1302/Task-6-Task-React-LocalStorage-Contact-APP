@@ -160,6 +160,12 @@ img {
 
 th,
 td {
-  border: 2px solid black;
+  /* border: 2px solid black; */
   padding: 15px;
+  border-bottom: 1px solid rgb(190, 188, 188);
+}
+
+th {
+  background-color: black;
+  color: white;
 }

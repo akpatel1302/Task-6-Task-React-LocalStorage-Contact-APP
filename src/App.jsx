@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Signin from "./Signin";
-import Signup from "./Signup";
-import Contact from "./Contact";
-import Proctected from "./Proctected";
+import Signin from "./Signin/Signin";
+import Signup from "./Signup/Signup";
+import Contact from "./Contact/Contact";
+import Proctected from "./Proctected/Proctected";
 
 function App() {
   return (

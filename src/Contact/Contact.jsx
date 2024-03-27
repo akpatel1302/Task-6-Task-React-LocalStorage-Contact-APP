@@ -195,7 +195,7 @@
 
 // export default Contact;
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { CSVLink } from "react-csv";
 import { useNavigate } from "react-router-dom";
 import papa from "papaparse";

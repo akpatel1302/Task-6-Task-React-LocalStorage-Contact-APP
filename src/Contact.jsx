@@ -196,8 +196,9 @@
 // export default Contact;
 
 import React, { useState, useEffect } from "react";
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
 import { useNavigate } from "react-router-dom";
+import papa from "papaparse";
 
 const Contact = () => {
   const [contacts, setContacts] = useState([]);
@@ -208,6 +209,7 @@ const Contact = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [image, setImage] = useState("");
   const [userId, setUserId] = useState("");
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
   // Load userId from local storage
   useEffect(() => {
@@ -300,32 +302,27 @@ const Contact = () => {
     }
   };
 
-  const handleImport = (e) => {
+  const handlefilechange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
-    reader.onload = (event) => {
-      const result = event.target.result;
-      const importedContacts = CSVToArray(result);
-      setContacts(importedContacts);
+    reader.onload = () => {
+      const result = reader.result;
+      papa.parse(result, {
+        header: true,
+        complete: (parsedData) => {
+          setData(parsedData.data);
+
+          console.log(parsedData.data);
+        },
+      });
     };
     reader.readAsText(file);
   };
 
-  const CSVToArray = (strData, strDelimiter = ",") => {
-    const arrData = strData.split("\n");
-    console.log("arrData: " + arrData);
-    const arrCSV = arrData.map((row) => row.split(strDelimiter));
-    console.log("arrCSV: " + arrCSV);
-    const headers = arrCSV.shift();
-    console.log("headers: " + headers);
-    return arrCSV.map((row) => {
-      const obj = {};
-      headers.forEach((header, i) => {
-        obj[header.trim()] = row[i].trim();
-      });
-      obj.id = Date.now() + Math.random();
-      return obj;
-    });
+  const handleFileImport = () => {
+    const updatedContacts = [...contacts, ...data];
+    setContacts(updatedContacts);
+    localStorage.setItem(`contacts_${userId}`, JSON.stringify(updatedContacts));
   };
 
   return (
@@ -338,14 +335,18 @@ const Contact = () => {
         Export
       </CSVLink>
       <h1>Contact List</h1>
-      <label htmlFor="importFile" className="btn btn-dark">
+      <label
+        htmlFor="importFile"
+        className="btn btn-dark"
+        onClick={handleFileImport}
+      >
         Import
         <input
           type="file"
           id="importFile"
           style={{ display: "none" }}
           accept=".csv"
-          onChange={handleImport}
+          onChange={handlefilechange}
         />
       </label>
       <button

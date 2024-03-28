@@ -11,6 +11,7 @@ const Signup = () => {
   });
 
   const [records, setRecords] = useState([]);
+  const [contactList, setContactList] = useState([]);
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -25,8 +26,14 @@ const Signup = () => {
       return;
     }
 
-    const newRecord = { ...userRegister, id: new Date().getTime().toString() };
+    const newRecord = {
+      ...userRegister,
+      id: new Date().getTime().toString(),
+      contactList: contactList,
+    };
+    console.log(...records);
     const updatedRecords = [...records, newRecord];
+    console.log(updatedRecords)
     setRecords(updatedRecords);
 
     // Save to local storage
@@ -38,6 +45,16 @@ const Signup = () => {
       confirmPassword: "",
     });
     navigate("/signin");
+  };
+
+  const handleAddContact = (e) => {
+    e.preventDefault();
+    // Add contact to contact list
+    setContactList([
+      ...contactList,
+      { name: userRegister.username, id: new Date().getTime().toString() },
+    ]);
+    setUserRegister({ ...userRegister, username: "" }); // Clear the input field after adding contact
   };
 
   useEffect(() => {
@@ -151,6 +168,25 @@ const Signup = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="row mt-4 justify-content-center">
+            <div className="col-md-6">
+              <form onSubmit={handleAddContact}>
+                <div className="mb-3">
+                  <label htmlFor="contactName" className="form-label">
+                    Contact Name
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="contactName"
+                    value={userRegister.username}
+                    onChange={handleInput}
+                    required
+                  />
+                </div>
+              </form>
             </div>
           </div>
         </div>

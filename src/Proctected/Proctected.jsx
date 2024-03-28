@@ -36,7 +36,7 @@ function Protected(props) {
   const storedUsers = JSON.parse(localStorage.getItem("userRecords"));
 
   // Check if storedUsers exist and if the user is authenticated
-  console.log('-------',!storedUsers.isLoggedIn)
+  console.log("-------", !storedUsers.isLoggedIn);
   if (!storedUsers || !storedUsers.isLoggedIn) {
     navigate("/signin");
   }

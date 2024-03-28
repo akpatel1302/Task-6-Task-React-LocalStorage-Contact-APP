@@ -13,7 +13,7 @@ const Signin = () => {
 
     // Get data from local storage
     const storedUsers = JSON.parse(localStorage.getItem("userRecords"));
-
+    console.log(storedUsers);
     // Check if email and password are provided
     if (!email || !password) {
       setError("Please provide both email and password.");

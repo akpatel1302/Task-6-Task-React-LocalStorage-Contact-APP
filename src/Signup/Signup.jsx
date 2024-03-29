@@ -34,15 +34,14 @@ const Signup = () => {
       alert("Passwords do not match!");
       return;
     }
-
+    const { confirmPassword, ...userWithoutConfirmPassword } = userRegister;
     const newRecord = {
-      ...userRegister,
+      ...userWithoutConfirmPassword,
       id: new Date().getTime().toString(),
       contactList: contactList,
     };
-    console.log(...records);
+
     const updatedRecords = [...records, newRecord];
-    console.log(updatedRecords);
     setRecords(updatedRecords);
 
     // Save to local storage

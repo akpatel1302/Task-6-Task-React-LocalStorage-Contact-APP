@@ -18,6 +18,11 @@ const Signin = () => {
     // Get data from local storage
     const storedUsers = JSON.parse(localStorage.getItem("userRecords"));
     console.log(storedUsers);
+
+    if (!storedUsers) {
+      setError("Please register the user does not exist");
+      return;
+    }
     // Check if email and password are provided
     if (!email || !password) {
       setError("Please provide both email and password.");

@@ -1,54 +1,38 @@
-// import { useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-
-// function Proctected(props) {
-//   const { Component } = props;
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const storedUsers = JSON.parse(localStorage.getItem("userRecords"));
-//     console.log('------------------------>', storedUsers)
-
-//     if (!storedUsers.length) {
-
-//       navigate("/signin");
-//     }
-//   });
-
-//   return (
-//     <>
-//       <Component />
-//     </>
-//   );
-// }
-
-// export default Proctected;
-
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useEffect } from "react";
 
 function Protected(props) {
   const { Component } = props;
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  const storedUsers = JSON.parse(localStorage.getItem("userRecords"));
+  useEffect(() => {
+    // Check if the user is logged in
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!loggedInUser) {
+      navigate("/signin"); // Redirect to signin if not logged in
+    }
+  }, [navigate]);
 
-  // Check if storedUsers exist and if the user is authenticated
-  console.log("-------", !storedUsers.isLoggedIn);
-  if (!storedUsers || !storedUsers.isLoggedIn) {
-    navigate("/signin");
-  }
-  // else
-  // {
-  //   navigate("/contact");
-  // }
-  // }, [navigate]);
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      // Warn user before navigating away
+      event.preventDefault();
+      event.returnValue = "";
+      localStorage.removeItem("loggedInUser");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   return <Component />;
 }
 
+// props validation
 Protected.propTypes = {
   Component: PropTypes.elementType.isRequired,
 };

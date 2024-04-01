@@ -14,20 +14,20 @@ function Protected(props) {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      // Warn user before navigating away
-      event.preventDefault();
-      event.returnValue = "";
-      localStorage.removeItem("loggedInUser");
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event) => {
+  //     // Warn user before navigating away
+  //     event.preventDefault();
+  //     event.returnValue = "";
+  //     // localStorage.removeItem("loggedInUser");
+  //   };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
 
   return <Component />;
 }

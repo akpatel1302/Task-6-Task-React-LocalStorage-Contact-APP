@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import { CSVLink } from "react-csv";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFileExport,
+  faFileImport,
+  faSignOutAlt,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+
 import papa from "papaparse";
 import "./Contact.css"; // Import CSS file for custom styling
 
@@ -148,6 +157,10 @@ const Contact = () => {
     reader.readAsText(file);
   };
 
+  const handleRemoveImage = () => {
+    setImage(""); // Clear the image state
+  };
+
   useEffect(() => {
     if (user) {
       const userRecords = JSON.parse(localStorage.getItem("userRecords")) || [];
@@ -170,9 +183,11 @@ const Contact = () => {
               filename={"contacts.csv"}
               disabled={!user.contactList || user.contactList.length === 0}
             >
+              <FontAwesomeIcon icon={faFileExport} className="me-1" />
               Export
             </CSVLink>
             <label htmlFor="importFile" className="btn btn-dark me-2">
+              <FontAwesomeIcon icon={faFileImport} className="me-1" />
               Import
               <input
                 type="file"
@@ -186,9 +201,11 @@ const Contact = () => {
               className="btn btn-outline-success me-2"
               onClick={() => openPopup(null)}
             >
+              <FontAwesomeIcon icon={faPlus} className="me-1" />
               Add Contact
             </button>
             <button className="btn btn-danger" onClick={handleLogout}>
+              <FontAwesomeIcon icon={faSignOutAlt} className="me-1" />
               Logout
             </button>
           </div>
@@ -200,15 +217,18 @@ const Contact = () => {
                 &times;
               </span>
               <h2>{selectedContact ? "Edit Contact" : "Add Contact"}</h2>
-              <label>Name:</label>
+              <label>
+                Name <span className="text-danger">*</span>
+              </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="form-control mb-3"
               />
-              <label>Email:</label>
+              <label>
+                Email <span className="text-danger">*</span>
+              </label>
               <input
                 type="email"
                 value={email}
@@ -224,7 +244,9 @@ const Contact = () => {
               <div className="invalid-feedback">
                 Please provide a valid email.
               </div>
-              <label>Phone Number:</label>
+              <label>
+                Phone Number <span className="text-danger">*</span>
+              </label>
               <input
                 type="tel"
                 value={phoneNumber}
@@ -242,15 +264,24 @@ const Contact = () => {
                 Please provide a valid phone number.
               </div>
               <label>Upload Photo:</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="form-control mb-3"
-              />
-              {image && (
-                <img src={image} alt="Contact" className="uploaded-image" />
-              )}
+              <div className="image-upload">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                {image && (
+                  <div className="preview-image">
+                    <img src={image} alt="Contact" />
+                    <span
+                      className="btn remove-image"
+                      onClick={handleRemoveImage}
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} className="me-1" />
+                    </span>
+                  </div>
+                )}
+              </div>
               <button onClick={handleSave} className="btn btn-primary mt-3">
                 Save
               </button>

@@ -2,41 +2,37 @@ import { useState, useEffect } from "react";
 import { CSVLink } from "react-csv";
 import { useNavigate } from "react-router-dom";
 import papa from "papaparse";
+import "./Contact.css"; // Import CSS file for custom styling
 
 const Contact = () => {
-  const [user, setUser] = useState(null); // Current logged-in user
+  const [user, setUser] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [image, setImage] = useState("");
-
-  const [noContactAvailable, setNoContactAvailable] = useState(false); //  no contacts available
-
+  const [noContactAvailable, setNoContactAvailable] = useState(false);
   const [emailValid, setEmailValid] = useState(true);
   const [phoneValid, setPhoneValid] = useState(true);
   const navigate = useNavigate();
 
-  // Load user data from localStorage
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (loggedInUser) {
       setUser(loggedInUser);
     } else {
-      navigate("/signin"); // Redirect to signin if no user is logged in
+      navigate("/signin");
     }
   }, [navigate]);
 
   useEffect(() => {
-    // Initialize user's contactList if not already present
     if (user && !user.contactList) {
       setUser({ ...user, contactList: [] });
     }
   }, [user]);
 
   useEffect(() => {
-    // Check if no contacts are available
     if (user && user.contactList && user.contactList.length === 0) {
       setNoContactAvailable(true);
     } else {
@@ -60,29 +56,22 @@ const Contact = () => {
     setEmail("");
     setPhoneNumber("");
     setImage("");
-    setEmailValid(true); // Reset email validation state
-    setPhoneValid(true); // Reset phone number validation state
+    setEmailValid(true);
+    setPhoneValid(true);
   };
 
   const handleSave = () => {
-    // Custom validation for phone number and email
-    const phoneNumberWithoutSpaces = phoneNumber.replace(/\s/g, ""); // Remove white spaces
-    const phoneNumberIsValid = /^\d{10}$/.test(phoneNumberWithoutSpaces); // Check if phone number is exactly 10 digits
+    const phoneNumberWithoutSpaces = phoneNumber.replace(/\s/g, "");
+    const phoneNumberIsValid = /^\d{10}$/.test(phoneNumberWithoutSpaces);
+    const emailIsValid = /\S+@\S+\.\S+/.test(email);
 
-    const emailIsValid = /\S+@\S+\.\S+/.test(email); // Check if email is in valid format
-
-    if (
-      !name.trim() || // Check if name is empty or only contains white spaces
-      !emailIsValid || // Check if email is not valid
-      !phoneNumberIsValid // Check if phone number is not valid
-    ) {
+    if (!name.trim() || !emailIsValid || !phoneNumberIsValid) {
       alert("Please fill out all required fields correctly.");
       return;
     }
 
     const updatedContacts = [...user.contactList];
     if (selectedContact) {
-      // Edit existing contact
       const index = updatedContacts.findIndex(
         (contact) => contact.id === selectedContact.id
       );
@@ -94,13 +83,11 @@ const Contact = () => {
         image,
       };
     } else {
-      // Add new contact
       const newContact = { id: Date.now(), name, email, phoneNumber, image };
       updatedContacts.push(newContact);
     }
     setUser({ ...user, contactList: updatedContacts });
 
-    // Update localStorage
     const userRecords = JSON.parse(localStorage.getItem("userRecords")) || [];
     const updatedUserRecords = userRecords.map((u) =>
       u.id === user.id ? { ...user, contactList: updatedContacts } : u
@@ -118,7 +105,6 @@ const Contact = () => {
       );
       setUser({ ...user, contactList: updatedContacts });
 
-      // Update localStorage
       const userRecords = JSON.parse(localStorage.getItem("userRecords")) || [];
       const updatedUserRecords = userRecords.map((u) =>
         u.id === user.id ? { ...user, contactList: updatedContacts } : u
@@ -140,7 +126,7 @@ const Contact = () => {
     const response = window.confirm("Are you sure you want to logout?");
     if (response) {
       localStorage.removeItem("loggedInUser");
-      navigate("/signin"); // Redirect to signin page
+      navigate("/signin");
     }
   };
 
@@ -163,7 +149,6 @@ const Contact = () => {
   };
 
   useEffect(() => {
-    // Update userRecords in localStorage when user state changes
     if (user) {
       const userRecords = JSON.parse(localStorage.getItem("userRecords")) || [];
       const updatedUserRecords = userRecords.map((u) =>
@@ -175,35 +160,39 @@ const Contact = () => {
 
   return (
     user && (
-      <div>
-        <CSVLink
-          className="btn btn-dark"
-          data={user.contactList}
-          filename={"contacts.csv"}
-          disabled={!user.contactList || user.contactList.length === 0} // Disable export button if no contacts available
-        >
-          Export
-        </CSVLink>
-        <h1>Contact List</h1>
-        <label htmlFor="importFile" className="btn btn-dark">
-          Import
-          <input
-            type="file"
-            id="importFile"
-            style={{ display: "none" }}
-            accept=".csv"
-            onChange={handleFileChange}
-          />
-        </label>
-        <button
-          className="btn btn-outline-success"
-          onClick={() => openPopup(null)}
-        >
-          Add Contact
-        </button>
-        <button className="btn btn-danger" onClick={handleLogout}>
-          Logout
-        </button>
+      <div className="container mt-5">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h1 className="mb-0">Contact List</h1>
+          <div>
+            <CSVLink
+              className="btn btn-dark me-2"
+              data={user.contactList}
+              filename={"contacts.csv"}
+              disabled={!user.contactList || user.contactList.length === 0}
+            >
+              Export
+            </CSVLink>
+            <label htmlFor="importFile" className="btn btn-dark me-2">
+              Import
+              <input
+                type="file"
+                id="importFile"
+                style={{ display: "none" }}
+                accept=".csv"
+                onChange={handleFileChange}
+              />
+            </label>
+            <button
+              className="btn btn-outline-success me-2"
+              onClick={() => openPopup(null)}
+            >
+              Add Contact
+            </button>
+            <button className="btn btn-danger" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        </div>
         {showPopup && (
           <div className="popup">
             <div className="popup-content">
@@ -217,6 +206,7 @@ const Contact = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                className="form-control mb-3"
               />
               <label>Email:</label>
               <input
@@ -224,9 +214,11 @@ const Contact = () => {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  setEmailValid(e.target.checkValidity()); // Update email validity state
+                  setEmailValid(e.target.checkValidity());
                 }}
-                className={`form-control ${emailValid ? "" : "is-invalid"}`} // Apply Bootstrap validation
+                className={`form-control mb-3 ${
+                  emailValid ? "" : "is-invalid"
+                }`}
                 required
               />
               <div className="invalid-feedback">
@@ -238,10 +230,12 @@ const Contact = () => {
                 value={phoneNumber}
                 onChange={(e) => {
                   setPhoneNumber(e.target.value);
-                  setPhoneValid(e.target.checkValidity()); // Update phone number validity state
+                  setPhoneValid(e.target.checkValidity());
                 }}
-                className={`form-control ${phoneValid ? "" : "is-invalid"}`} // Apply Bootstrap class based on phone number validity
-                pattern="[0-9]{10}" // Update phone number pattern
+                className={`form-control mb-3 ${
+                  phoneValid ? "" : "is-invalid"
+                }`}
+                pattern="[0-9]{10}"
                 required
               />
               <div className="invalid-feedback">
@@ -252,14 +246,19 @@ const Contact = () => {
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
+                className="form-control mb-3"
               />
-              {image && <img src={image} alt="Contact" />}
-              <button onClick={handleSave}>Save</button>
+              {image && (
+                <img src={image} alt="Contact" className="uploaded-image" />
+              )}
+              <button onClick={handleSave} className="btn btn-primary mt-3">
+                Save
+              </button>
             </div>
           </div>
         )}
-        <div className="container display-contact d-flex justify-content-center pt-5">
-          <table>
+        <div className="table-responsive">
+          <table className="table table-striped">
             <thead>
               <tr>
                 <th>Name</th>
@@ -282,18 +281,19 @@ const Contact = () => {
                         height={100}
                         width={100}
                         alt={contact.name}
+                        className="contact-image"
                       />
                     )}
                   </td>
                   <td>
                     <button
-                      className="btn btn-primary"
+                      className="btn btn-primary btn-sm me-2"
                       onClick={() => openPopup(contact)}
                     >
                       Edit
                     </button>
                     <button
-                      className="btn btn-danger"
+                      className="btn btn-danger btn-sm"
                       onClick={() => handleDelete(contact.id)}
                     >
                       Delete
@@ -302,10 +302,10 @@ const Contact = () => {
                 </tr>
               ))}
             </tbody>
-            {noContactAvailable && (
-              <p className="no-contact-msg">No contact list available.</p>
-            )}{" "}
           </table>
+          {noContactAvailable && (
+            <p className="text-center">No contact list available.</p>
+          )}
         </div>
       </div>
     )

@@ -28,8 +28,6 @@ import "./App.css";
 import Signin from "./Signin/Signin";
 import Signup from "./Signup/Signup";
 import Contact from "./Contact/Contact";
-import * as React from "react";
-import { createRoot } from "react-dom";
 import { RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -56,3 +54,10 @@ function App() {
 }
 
 export default App;
+
+
+
+
+// use wrapper with private public child 
+
+// protected and unportected

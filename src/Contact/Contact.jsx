@@ -11,6 +11,11 @@ const Contact = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [image, setImage] = useState("");
+
+  const [noContactAvailable, setNoContactAvailable] = useState(false); //  no contacts available
+
+  const [emailValid, setEmailValid] = useState(true);
+  const [phoneValid, setPhoneValid] = useState(true);
   const navigate = useNavigate();
 
   // Load user data from localStorage
@@ -30,6 +35,15 @@ const Contact = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    // Check if no contacts are available
+    if (user && user.contactList && user.contactList.length === 0) {
+      setNoContactAvailable(true);
+    } else {
+      setNoContactAvailable(false);
+    }
+  }, [user]);
+
   const openPopup = (contact) => {
     setSelectedContact(contact);
     setName(contact ? contact.name : "");
@@ -46,9 +60,26 @@ const Contact = () => {
     setEmail("");
     setPhoneNumber("");
     setImage("");
+    setEmailValid(true); // Reset email validation state
+    setPhoneValid(true); // Reset phone number validation state
   };
 
   const handleSave = () => {
+    // Custom validation for phone number and email
+    const phoneNumberWithoutSpaces = phoneNumber.replace(/\s/g, ""); // Remove white spaces
+    const phoneNumberIsValid = /^\d{10}$/.test(phoneNumberWithoutSpaces); // Check if phone number is exactly 10 digits
+
+    const emailIsValid = /\S+@\S+\.\S+/.test(email); // Check if email is in valid format
+
+    if (
+      !name.trim() || // Check if name is empty or only contains white spaces
+      !emailIsValid || // Check if email is not valid
+      !phoneNumberIsValid // Check if phone number is not valid
+    ) {
+      alert("Please fill out all required fields correctly.");
+      return;
+    }
+
     const updatedContacts = [...user.contactList];
     if (selectedContact) {
       // Edit existing contact
@@ -149,6 +180,7 @@ const Contact = () => {
           className="btn btn-dark"
           data={user.contactList}
           filename={"contacts.csv"}
+          disabled={!user.contactList || user.contactList.length === 0} // Disable export button if no contacts available
         >
           Export
         </CSVLink>
@@ -184,19 +216,37 @@ const Contact = () => {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
               />
               <label>Email:</label>
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailValid(e.target.checkValidity()); // Update email validity state
+                }}
+                className={`form-control ${emailValid ? "" : "is-invalid"}`} // Apply Bootstrap validation
+                required
               />
+              <div className="invalid-feedback">
+                Please provide a valid email.
+              </div>
               <label>Phone Number:</label>
               <input
-                type="text"
+                type="tel"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={(e) => {
+                  setPhoneNumber(e.target.value);
+                  setPhoneValid(e.target.checkValidity()); // Update phone number validity state
+                }}
+                className={`form-control ${phoneValid ? "" : "is-invalid"}`} // Apply Bootstrap class based on phone number validity
+                pattern="[0-9]{10}" // Update phone number pattern
+                required
               />
+              <div className="invalid-feedback">
+                Please provide a valid phone number.
+              </div>
               <label>Upload Photo:</label>
               <input
                 type="file"
@@ -252,6 +302,9 @@ const Contact = () => {
                 </tr>
               ))}
             </tbody>
+            {noContactAvailable && (
+              <p className="no-contact-msg">No contact list available.</p>
+            )}{" "}
           </table>
         </div>
       </div>

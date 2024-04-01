@@ -285,6 +285,12 @@ const Contact = () => {
               <button onClick={handleSave} className="btn btn-primary mt-3">
                 Save
               </button>
+              {/* <button
+                onClick={closePopup}
+                className="btn btn-primary mt-3"
+              >
+                Cancel
+              </button> */}
             </div>
           </div>
         )}

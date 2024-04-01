@@ -100,6 +100,7 @@ const Signup = () => {
                               onChange={handleInput}
                               required
                             />
+
                             <label
                               className="form-label"
                               htmlFor="form3Example3c"

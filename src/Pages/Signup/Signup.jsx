@@ -14,6 +14,7 @@ const Signup = () => {
   const [contactList] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
 
+  //for password eye toggle button
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -26,6 +27,7 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    //for existing user check
     const existingUser = records.find(
       (record) => record.username === userRegister.username
     );
@@ -34,13 +36,13 @@ const Signup = () => {
       alert("Email or username already exists!");
       return;
     }
-    // Check
+    // Check password
     if (userRegister.password !== userRegister.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
 
-    // Encode password before storing
+    // Encode password 
     const encodedPassword = window.btoa(userRegister.password);
 
     const { confirmPassword, ...userWithoutConfirmPassword } = userRegister;

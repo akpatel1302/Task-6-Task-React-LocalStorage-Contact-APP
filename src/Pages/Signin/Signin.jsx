@@ -8,9 +8,11 @@ const Signin = () => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  //for password eye button toggle
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
   const handleSignIn = (e) => {
     e.preventDefault();
     setError("");
@@ -29,7 +31,7 @@ const Signin = () => {
       return;
     }
 
-    // Find user by email
+    // Find user by email for login from localStorage
     const user = storedUsers.find((user) => user.username === email);
 
     if (user) {

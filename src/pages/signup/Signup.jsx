@@ -42,7 +42,7 @@ const Signup = () => {
       return;
     }
 
-    // Encode password 
+    // Encode password
     const encodedPassword = window.btoa(userRegister.password);
 
     const { confirmPassword, ...userWithoutConfirmPassword } = userRegister;

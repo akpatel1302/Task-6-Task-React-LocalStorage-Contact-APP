@@ -29,9 +29,12 @@ const Contact = () => {
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (loggedInUser) {
-      setUser(loggedInUser);
+      setUser((prevUser) => ({
+        ...prevUser,
+        ...loggedInUser,
+      }));
     }
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     if (user && !user.contactList) {
@@ -39,7 +42,7 @@ const Contact = () => {
     }
   }, [user]);
 
-  //set contactList status Available or not Available
+  //for set no contact list msg
   useEffect(() => {
     if (user && user.contactList && user.contactList.length === 0) {
       setNoContactAvailable(true);
@@ -68,7 +71,7 @@ const Contact = () => {
     setPhoneValid(true);
   };
 
-  //for save
+  //save
   const handleSave = () => {
     const phoneNumberWithoutSpaces = phoneNumber.replace(/\s/g, "");
     const phoneNumberIsValid = /^\d{10}$/.test(phoneNumberWithoutSpaces);
@@ -106,7 +109,7 @@ const Contact = () => {
     closePopup();
   };
 
-  //for deleting users's contacts
+  //delete
   const handleDelete = (id) => {
     const del = window.confirm("Are you sure to delete this contact...?");
     if (del) {
@@ -123,7 +126,7 @@ const Contact = () => {
     }
   };
 
-  //for image upload
+  //for file 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -133,7 +136,7 @@ const Contact = () => {
     reader.readAsDataURL(file);
   };
 
-  //for Logout
+  //for logout
   const handleLogout = () => {
     const response = window.confirm("Are you sure you want to logout?");
     if (response) {
@@ -142,7 +145,7 @@ const Contact = () => {
     }
   };
 
-  // for import files
+  //import
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -161,19 +164,15 @@ const Contact = () => {
     reader.readAsText(file);
   };
 
-  // for image remove
+  //remove image
   const handleRemoveImage = () => {
-    setImage(""); // Clear the image state
+    setImage("");
   };
 
-  //match user id
+
   useEffect(() => {
     if (user) {
-      const userRecords = JSON.parse(localStorage.getItem("userRecords")) || [];
-      const updatedUserRecords = userRecords.map((u) =>
-        u.id === user.id ? user : u
-      );
-      localStorage.setItem("userRecords", JSON.stringify(updatedUserRecords));
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
     }
   }, [user]);
 
@@ -291,12 +290,6 @@ const Contact = () => {
               <button onClick={handleSave} className="btn btn-primary mt-3">
                 Save
               </button>
-              {/* <button
-                onClick={closePopup}
-                className="btn btn-primary mt-3"
-              >
-                Cancel
-              </button> */}
             </div>
           </div>
         )}

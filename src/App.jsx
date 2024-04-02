@@ -27,15 +27,14 @@
 
 // export default App;
 
-import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import "./App.css";
-import Signin from "./Pages/Signin/Signin";
-import Signup from "./Pages/Signup/Signup";
-import Contact from "./Pages/Contact/Contact";
+import Signin from "./pages/signin/Signin";
+import Signup from "./pages/signup/Signup";
+import Contact from "./pages/contact/Contact";
 import { RouterProvider } from "react-router-dom";
-import PrivateRoute from "./Routes/PrivateRoute";
-import PublicRoutes from "./Routes/PublicRoute";
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicRoutes from "./routes/PublicRoute";
 
 const router = createBrowserRouter([
   {
